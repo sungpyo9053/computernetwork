@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Log In{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+  <form method="post">
+    <label for="username">Username</label>
+    <input name="username" id="username" required>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" required>
+    <input type="button" id="execute" value="Log In" />
+  </form>
+
+<div id='xxx'>  </div>
+
+  <script>
+  document.querySelector('#execute').addEventListener('click', function(event){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/auth/login');
+      var x = document.getElementById("whole");
+      xhr.onreadystatechange = function(){
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            window.location = xhr.responseURL;
+          } else {
+            alert('request에 뭔가 문제가 있어요.');
+          }
+        }
+      }
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      var y = document.getElementById("username").value;
+      var z = document.getElementById("password").value;
+      var data = { username: y, password: z};
+      xhr.send(Object.keys(data).map(key => `${key}=${data[key]}`).join('&'));
+  });
+  </script>
+
+{% endblock %}
+

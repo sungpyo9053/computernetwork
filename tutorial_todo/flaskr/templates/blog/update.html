@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit "{{ post['title'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="title">Title</label>
+    <input name="title" id="title" value="{{ request.form['title'] or post['title'] }}" required>
+    <label for="body">Body</label>
+    <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
+    <input type="button" id="execute" value="Save">
+  </form>
+	
+<script>
+    document.querySelector('#execute').addEventListener('click', function(event){
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', location.pathname);
+        var x = document.getElementById("whole");
+        xhr.onreadystatechange = function(){
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+              window.location = xhr.responseURL;
+            } else {
+              alert('request에 뭔가 문제가 있어요.');
+            }
+          }
+        }
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        var y = document.getElementById("title").value;
+        var z = document.getElementById("body").value;
+        var data = { title: y, body: z};
+        xhr.send(Object.keys(data).map(key => `${key}=${data[key]}`).join('&'));
+    });
+    </script>
+
+  <hr>
+  <form action="{{ url_for('blog.delete', id=post['id']) }}" method="post">
+    <input class="danger" type="button" id="execute2" value="Delete" onclick="return confirm('Are you sure?');">
+  </form>
+
+<script>
+    document.querySelector('#execute2').addEventListener('click', function(event){
+        var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', location.pathname);
+        var x = document.getElementById("whole");
+        xhr.onreadystatechange = function(){
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+              window.location = xhr.responseURL;
+            } else {
+              alert('request에 뭔가 문제가 있어요.');
+            }
+          }
+        }
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        var y = document.getElementById("title").value;
+        var z = document.getElementById("body").value;
+        var data = { title: y, body: z};
+        xhr.send(Object.keys(data).map(key => `${key}=${data[key]}`).join('&'));
+    });
+    </script>
+
+{% endblock %}
